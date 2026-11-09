@@ -1,10 +1,10 @@
 name: collect
 
 # Snapshot library occupancy every 15 minutes and commit it to the `data` branch.
-# (GitHub may run scheduled jobs a few minutes late at busy times.)
+# Off-peak minutes on purpose: GitHub delays/drops many scheduled runs at :00/:15/:30/:45.
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:
