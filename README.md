@@ -13,14 +13,14 @@ Live and historical occupancy of Ontario university libraries: **https://librari
 
 ## Scheduling
 
-GitHub's own cron is unreliable for new repos and at busy times, so **cron-job.org** also starts the workflow every 15 minutes:
+GitHub's own cron is unreliable (new repos can wait hours for it, and busy-time runs get dropped), so the workflow keeps itself running:
 
-- Request: `POST https://api.github.com/repos/eitanzur/library-tracker/actions/workflows/collect.yml/dispatches`
-- Headers: `Authorization: Bearer <token>`, `Accept: application/vnd.github+json`, `X-GitHub-Api-Version: 2022-11-28`
-- Body: `{"ref":"main"}`. A success returns HTTP 204.
-- Token: a fine-grained GitHub token scoped to **this repo only**, permission **Actions: Read and write**. When it expires, make a new one and paste it into the cron-job.org job.
-
-The collector skips a run if the last snapshot is under 10 minutes old, so the GitHub cron and the external trigger never double-record.
+- Each run executes `collector/loop.sh`, which takes a snapshot every 15 minutes for about 5.5 hours (the job limit is 6 hours).
+- At the end, the run starts the next one with `gh workflow run` using the built-in `GITHUB_TOKEN`. No personal token and no outside service are involved.
+- The cron schedule (`7,22,37,52 * * * *`) is only a backup that restarts the chain if it ever breaks. The `collect` concurrency group keeps a single chain alive.
+- The collector skips a snapshot if the last one is under 10 minutes old, so overlapping triggers never double-record.
+- **To stop collecting:** cancel the running workflow in the Actions tab (a cancelled run doesn't start the next one), then disable the workflow. Otherwise the backup cron restarts it.
+- **To restart by hand:** run `gh workflow run collect.yml --repo eitanzur/library-tracker`.
 
 ## Sources
 
