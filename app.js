@@ -128,7 +128,12 @@ async function init() {
   document.querySelectorAll("#range button").forEach((b) => (b.onclick = () => { range = +b.dataset.r; renderDetail(); }));
   const want = params.get("u") || location.hash.slice(1);
   selectUni(live.some((u) => u.key === want) ? want : live[0].key);
-  addEventListener("resize", debounce(renderDetail, 150));
+  // Redraw when the chart's width changes (also catches a first draw before layout settled).
+  let lastW = 0;
+  new ResizeObserver(debounce(() => {
+    const w = $("#chart").clientWidth;
+    if (w && Math.abs(w - lastW) > 4) { lastW = w; renderDetail(); }
+  }, 100)).observe($("#chart"));
   addEventListener("hashchange", () => {
     const k = location.hash.slice(1);
     if (k !== cur && live.some((u) => u.key === k)) selectUni(k);
