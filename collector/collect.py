@@ -119,9 +119,20 @@ SOURCES = {
 # --- Main --------------------------------------------------------------------
 
 
+MIN_GAP = 10 * 60  # skip if the last snapshot is newer than this (two triggers may fire)
+
+
 def main(out_dir: str) -> int:
     now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
     t = int(now.timestamp())
+    try:
+        with open(os.path.join(out_dir, "latest.json"), encoding="utf-8") as f:
+            last = json.load(f).get("t", 0)
+        if t - last < MIN_GAP and not os.environ.get("FORCE"):
+            print(f"skip: last snapshot {t - last}s ago")
+            return 0
+    except (OSError, ValueError):
+        pass
     month = now.strftime("%Y-%m")
     latest = {"t": t, "universities": {}}
     failures = 0
