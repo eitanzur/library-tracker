@@ -1,0 +1,4 @@
+.devdata/
+.claude/
+.vercel/
+__pycache__/

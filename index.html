@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ontario Library Occupancy</title>
+  <meta name="description" content="Live and historical occupancy of Ontario university libraries, snapshotted every 15 minutes.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232a78d6'/><rect x='7' y='17' width='4' height='8' rx='1' fill='white'/><rect x='14' y='11' width='4' height='14' rx='1' fill='white'/><rect x='21' y='7' width='4' height='18' rx='1' fill='white'/></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>Ontario Library Occupancy</h1>
+      <p class="sub">How full each university library is, snapshotted every 15 minutes. <span id="updated"></span></p>
+      <nav class="tabs" id="tabs" aria-label="University"></nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="uni" aria-live="polite">
+      <div class="uni-head">
+        <h2 id="uni-name"></h2>
+        <a id="uni-source" class="muted" target="_blank" rel="noopener">source</a>
+      </div>
+      <p id="uni-note" class="muted note"></p>
+      <div id="cards" class="cards"></div>
+    </section>
+
+    <section id="detail" class="panel">
+      <div class="panel-head">
+        <h3 id="lib-name"></h3>
+        <div class="seg" id="range" role="group" aria-label="Time range">
+          <button data-r="1">24 h</button><button data-r="7">7 days</button><button data-r="30">30 days</button><button data-r="0">All</button>
+        </div>
+      </div>
+      <div id="chart" class="chart"></div>
+      <p id="chart-note" class="muted note"></p>
+
+      <h4>Typical week <span class="muted">· average % full by day and hour (Toronto time)</span></h4>
+      <div id="heat" class="heat"></div>
+
+      <div id="spaces-wrap">
+        <h4>Floors &amp; zones</h4>
+        <table class="tbl" id="spaces"><thead><tr><th>Space</th><th class="num">Now</th><th class="num">People / seats</th><th>Last 24 h</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>Coverage: all Ontario universities</h3>
+      <p class="muted note">Which schools publish live library occupancy, and where it comes from.</p>
+      <table class="tbl" id="coverage"><thead><tr><th>University</th><th>Status</th><th>Notes</th></tr></thead><tbody></tbody></table>
+    </section>
+  </main>
+
+  <div id="tip" class="tip" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
