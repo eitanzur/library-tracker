@@ -11,6 +11,17 @@ Live and historical occupancy of Ontario university libraries: **https://librari
   - `latest.json` → newest snapshot plus per-source ok/error status
 - The dashboard (`index.html`, `app.js`, `style.css`) is static on Vercel and reads the data straight from `raw.githubusercontent.com`. Data commits never trigger a Vercel deploy (`vercel.json` disables deploys for the `data` branch).
 
+## Scheduling
+
+GitHub's own cron is unreliable for new repos and at busy times, so **cron-job.org** also starts the workflow every 15 minutes:
+
+- Request: `POST https://api.github.com/repos/eitanzur/library-tracker/actions/workflows/collect.yml/dispatches`
+- Headers: `Authorization: Bearer <token>`, `Accept: application/vnd.github+json`, `X-GitHub-Api-Version: 2022-11-28`
+- Body: `{"ref":"main"}`. A success returns HTTP 204.
+- Token: a fine-grained GitHub token scoped to **this repo only**, permission **Actions: Read and write**. When it expires, make a new one and paste it into the cron-job.org job.
+
+The collector skips a run if the last snapshot is under 10 minutes old, so the GitHub cron and the external trigger never double-record.
+
 ## Sources
 
 | University | Source | Detail |
